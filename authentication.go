@@ -74,7 +74,7 @@ func CreateUserHandler(ctx *gin.Context) {
 		return
 	}
 	// insert new values into databawse
-	err = CreateUser(ctx.MustGet("postgresConn").(*pgx.Conn), request)
+	err = CreateUser(ctx.MustGet("persistence").(*pgx.Conn), request)
 	if err != nil {
 		StandardHTTP.InternalServerError(ctx)
 	} else {
