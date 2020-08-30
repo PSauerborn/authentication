@@ -40,6 +40,30 @@ func isAuthenticatedUser(ctx *gin.Context, username, password string) bool {
 	return comparePasswords(password, user.Password)
 }
 
+// helper function used to determine is a username is already taken
+func isUsernameTaken(ctx *gin.Context, username string) bool {
+	log.Debug(fmt.Sprintf("checking username %s", username))
+	user, err := GetUsername(PostgresMiddleware{}.GetConnection(ctx), username)
+	if err != nil {
+		log.Error(fmt.Errorf("unable to retrieve user from database: %v", err))
+		return true
+	}
+	log.Debug(fmt.Sprintf("username query returned %s", user))
+	return user != ""
+}
+
+// helper function used to determine is a user email is already taken
+func isEmailTaken(ctx *gin.Context, email string) bool {
+	log.Debug(fmt.Sprintf("checking email %s", email))
+	userEmail, err := GetUserEmail(PostgresMiddleware{}.GetConnection(ctx), email)
+	if err != nil {
+		log.Error(fmt.Errorf("unable to retrieve user email from database: %v", err))
+		return true
+	}
+	log.Debug(fmt.Sprintf("email query returned %s", userEmail))
+	return userEmail != ""
+}
+
 // function used to generate JWToken with UID and expiry date
 func GenerateJWToken(uid string) (string, error) {
 	// evaluate expiry time

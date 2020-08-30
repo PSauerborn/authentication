@@ -18,7 +18,7 @@ var (
 // Function used to configure service settings
 func ConfigureService() {
 	// set log level by overriding environment variables
-	LogLevelString := OverrideStringVariable("LOG_LEVEL", "INFO")
+	LogLevelString := OverrideStringVariable("LOG_LEVEL", "DEBUG")
 	if LogLevel, ok := LogLevels[LogLevelString]; ok {
 		log.SetLevel(LogLevel)
 	} else {

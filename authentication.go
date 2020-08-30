@@ -73,6 +73,18 @@ func CreateUserHandler(ctx *gin.Context) {
 		StandardHTTP.InvalidRequestBody(ctx)
 		return
 	}
+	// check if username is already taken
+	if (isUsernameTaken(ctx, request.Username)) {
+		payload := gin.H{"http_code": 400, "success": false, "message": "username already in use"}
+		ctx.AbortWithStatusJSON(400, payload)
+		return
+	}
+	// check if email is already taken
+	if (isEmailTaken(ctx, request.Email)) {
+		payload := gin.H{"http_code": 400, "success": false, "message": "email already in use"}
+		ctx.AbortWithStatusJSON(400, payload)
+		return
+	}
 	// insert new values into databawse
 	err = CreateUser(ctx.MustGet("persistence").(*pgx.Conn), request)
 	if err != nil {

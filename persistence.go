@@ -72,3 +72,33 @@ func CreateUser(db *pgx.Conn, user NewUserRequest) error {
 	}
 	return nil
 }
+
+// function used to retrieve user email from database
+func GetUserEmail(db *pgx.Conn, email string) (string, error) {
+	var userEmail string
+	results := db.QueryRow(context.Background(), "SELECT email FROM user_details WHERE email=$1", email)
+	err := results.Scan(&userEmail)
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			return "", nil
+		} else {
+			return "", err
+		}
+	}
+	return userEmail, nil
+}
+
+// function used to retrieve user username from database
+func GetUsername(db *pgx.Conn, username string) (string, error) {
+	var user string
+	results := db.QueryRow(context.Background(), "SELECT username FROM users WHERE username=$1", username)
+	err := results.Scan(&user)
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			return "", nil
+		} else {
+			return "", err
+		}
+	}
+	return user, nil
+}
