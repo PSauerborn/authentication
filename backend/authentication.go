@@ -16,6 +16,7 @@ func main() {
 	// read environment variables from config into local variables
 	ConfigureService()
 	router := gin.New()
+	router.Use(CORSMiddleware())
 
 	// configure GET routes used for server
 	router.GET("/health", HealthCheckHandler)

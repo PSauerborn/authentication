@@ -150,18 +150,29 @@ export default {
                     type: 'success',
                     text: 'successfully logged in user ' + vm.username
                 })
-                localStorage.setItem('userToken', response.data.payload.token)
-                window.location.href = process.env.VUE_APP_APPLICATION_URL
-                // sort tasks according to the currently active sort function
+                localStorage.setItem('userToken', response.data.token)
+                // get redirect URI from request path if present and redirect client
+                const redirect = vm.getRedirect()
+                if (redirect) {
+                    window.location.href = redirect
+                }
             }).catch(function (error) {
                 console.log(error)
                 vm.$notify({
                     group: 'main',
                     title: ' monty backend',
                     type: 'error',
-                    text: 'failed login user'
+                    text: 'failed login user: ' + error.response.data.message
                 })
             })
+        },
+        /**
+         * Function used to retrieve redirect url from query parameters
+         * if present in request path
+         */
+        getRedirect: function() {
+            const urlParams = new URLSearchParams(window.location.search)
+            return urlParams.get('redirect_uri')
         }
     },
     data() {

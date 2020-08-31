@@ -34,3 +34,19 @@ func (middleware PostgresMiddleware) Middleware() gin.HandlerFunc {
 func (middleware PostgresMiddleware) Persistence(ctx *gin.Context) *pgx.Conn {
 	return ctx.MustGet("persistence").(*pgx.Conn)
 }
+
+// function used to add CORS headers to routes
+func CORSMiddleware() gin.HandlerFunc {
+    return func(c *gin.Context) {
+        c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+        c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+        c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+        c.Writer.Header().Set("Access-Control-Allow-Methods", "POST,OPTIONS,GET,PUT,PATCH,DELETE")
+
+        if c.Request.Method == "OPTIONS" {
+            c.AbortWithStatus(204)
+            return
+        }
+        c.Next()
+    }
+}
