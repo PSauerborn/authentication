@@ -21,7 +21,7 @@ func main() {
 	router.GET("/health", HealthCheckHandler)
 	// configure POST routes used for server
 	router.POST("/token", PostgresMiddleware{}.Middleware(), GetTokenHandler)
-	router.POST("/user", PostgresMiddleware{}.Middleware(), CreateUserHandler)
+	router.POST("/signup", PostgresMiddleware{}.Middleware(), CreateUserHandler)
 
 	log.Info(fmt.Sprintf("starting authentication service at %s:%d", ListenAddress, ListenPort))
 	router.Run(fmt.Sprintf("%s:%d", ListenAddress, ListenPort))
