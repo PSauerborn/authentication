@@ -23,6 +23,7 @@ func main() {
 	// configure POST routes used for server
 	router.POST("/token", PostgresMiddleware{}.Middleware(), GetTokenHandler)
 	router.POST("/signup", PostgresMiddleware{}.Middleware(), CreateUserHandler)
+	router.POST("/user", PostgresMiddleware{}.Middleware(), GetUserDetailsHandler)
 
 	log.Info(fmt.Sprintf("starting authentication service at %s:%d", ListenAddress, ListenPort))
 	router.Run(fmt.Sprintf("%s:%d", ListenAddress, ListenPort))
@@ -93,5 +94,29 @@ func CreateUserHandler(ctx *gin.Context) {
 	} else {
 		log.Debug("successfully created new user")
 		ctx.JSON(200, gin.H{ "http_code": 200, "message": fmt.Sprintf("successfully created new user '%s'", request.Username) })
+	}
+}
+
+// function used to retrieve details for user
+func GetUserDetailsHandler(ctx *gin.Context) {
+	var request IntrospectionRequest
+	err := ctx.ShouldBind(&request)
+	if err != nil {
+		log.Error(fmt.Errorf("unable to parse request body: %v", err))
+		StandardHTTP.InvalidRequestBody(ctx)
+		return
+	}
+	log.Debug(fmt.Sprintf("retrieved body %+v", request))
+	claims, err := ParseJWToken(request.Token)
+	if err != nil {
+		StandardHTTP.Unauthorized(ctx)
+	} else {
+		user, err := GetFullUser(PostgresMiddleware{}.Persistence(ctx), claims.Uid)
+		if err != nil {
+			log.Error(fmt.Errorf("unable to retrieve user details: %v", err))
+			StandardHTTP.InternalServerError(ctx)
+			return
+		}
+		ctx.JSON(200, gin.H{ "http_code": 200, "success": true, "payload": user })
 	}
 }

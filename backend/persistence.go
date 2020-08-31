@@ -44,7 +44,7 @@ func GetUserDetails(db *pgx.Conn, username string) (UserDetails, error) {
 func GetFullUser(db *pgx.Conn, username string) (FullUserDetails, error) {
 	var (uid uuid.UUID; email string; created time.Time; admin bool)
 	// get results from database and scan into variables
-	results := db.QueryRow(context.Background(), "SELECT uid,email,created,admin FROM user_details INNER JOIN users ON (users.uid = user_details.uid) WHERE username=$1", username)
+	results := db.QueryRow(context.Background(), "SELECT users.uid,email,created,admin FROM user_details details INNER JOIN users users ON (users.uid = details.uid) WHERE username=$1", username)
 	err := results.Scan(&uid, &email, &created, &admin)
 	if err != nil {
 		log.Error(err)

@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"time"
+	"errors"
 	"golang.org/x/crypto/bcrypt"
 	"github.com/gin-gonic/gin"
 	"github.com/dgrijalva/jwt-go"
@@ -77,4 +78,20 @@ func GenerateJWToken(uid string) (string, error) {
 		"expiry": expiry,
 	})
 	return token.SignedString([]byte(JWTSecret))
+}
+
+// function used to parse JWT token
+func ParseJWToken(tokenString string) (*JWTClaims, error) {
+	log.Info(fmt.Sprintf("parsing JWToken %s", tokenString))
+	// parse token using JWT secret
+	token, _ := jwt.ParseWithClaims(tokenString, &JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
+		return []byte(JWTSecret), nil
+	})
+	// parse token into custom claims object
+	if customClaims, ok := token.Claims.(*JWTClaims); ok && token.Valid {
+		return customClaims, nil
+	} else {
+		log.Error("unable to parse JWT claims")
+		return nil, errors.New("invalid JWToken")
+	}
 }

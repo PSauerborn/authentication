@@ -3,14 +3,16 @@ package main
 import (
 	"time"
 	"github.com/google/uuid"
+	"github.com/dgrijalva/jwt-go"
 )
 
 
 // define struct used to hold JWT Claims
 type JWTClaims struct {
-	Uid   string
-	Admin bool
-	Exp   time.Time
+	Uid   string    `json:"uid"`
+	Admin bool	    `json:"admin"`
+	Exp   time.Time `json:"exp"`
+	jwt.StandardClaims
 }
 
 // ###################################################
@@ -29,6 +31,11 @@ type NewUserRequest struct {
 	Password string	`json:"password" binding:"required"`
 	Email    string `json:"email" binding:"required"`
 	Admin    *bool  `json:"admin" binding:"required"`
+}
+
+type IntrospectionRequest struct {
+	Uid   string `json:"uid" binding:"required"`
+	Token string `json:"token" binding:"required"`
 }
 
 // #######################################################
