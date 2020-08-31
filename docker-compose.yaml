@@ -5,25 +5,19 @@ services:
     build:
       context: ./backend
     container_name: identity-provider
-    ports:
-    - "10081:10081"
     networks:
     - core
-    - postgres-local
-    environment:
-      LOG_LEVEL: DEBUG
-      POSTGRES_CONNECTION: postgres://postgres:monty-dev@postgres-local:5432/authentication
-      JWT_SECRET: qJNJvkW2uVWtuPjN
+    - postgres
+    env_file:
+    - .env
 
   frontend:
     build:
       context: ./frontend
     container_name: login
-    ports:
-    - "8080:80"
 
 networks:
   core:
     name: core
-  postgres-local:
-    name: postgres-local
+  postgres:
+    name: postgres

@@ -21,4 +21,6 @@ COPY --from=build /app/server/authentication ./
 
 RUN chmod +x ./authentication
 
+EXPOSE 10081
+
 CMD [ "./authentication" ]
