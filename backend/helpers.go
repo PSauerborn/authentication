@@ -70,7 +70,7 @@ func isEmailTaken(ctx *gin.Context, email string) bool {
 func GenerateJWToken(uid string) (string, error) {
 	// evaluate expiry time
 	expiry := time.Now().UTC()
-	expiry.Add(time.Duration(TokenExpiryMinutes) * time.Minute)
+	expiry = expiry.Add(time.Duration(TokenExpiryMinutes) * time.Minute)
 
 	// generate token and sign with secret key
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
