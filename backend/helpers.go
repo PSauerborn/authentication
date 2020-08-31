@@ -75,7 +75,7 @@ func GenerateJWToken(uid string) (string, error) {
 	// generate token and sign with secret key
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"uid": uid,
-		"expiry": expiry,
+		"exp": expiry,
 	})
 	return token.SignedString([]byte(JWTSecret))
 }
