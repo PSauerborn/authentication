@@ -11,7 +11,8 @@ import (
 type PostgresMiddleware struct{}
 
 // define middleware used to instantiate postgres connection
-// when request reaches server
+// when request reaches server. The Postgres connection is then
+// set as an attribute of the Gin/Gonic context
 func (middleware PostgresMiddleware) Middleware() gin.HandlerFunc {
 	return func (ctx *gin.Context) {
 		// create database connection. return internal server error if connection fails
@@ -30,6 +31,6 @@ func (middleware PostgresMiddleware) Middleware() gin.HandlerFunc {
 }
 
 // function used to retrieve persistence from context
-func (middleware PostgresMiddleware) GetConnection(ctx *gin.Context) *pgx.Conn {
+func (middleware PostgresMiddleware) Persistence(ctx *gin.Context) *pgx.Conn {
 	return ctx.MustGet("persistence").(*pgx.Conn)
 }

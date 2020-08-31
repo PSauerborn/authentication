@@ -1,0 +1,152 @@
+openapi: 3.0.0
+info:
+  title: Identity Provider
+  description: Identity Provider used to gain access tokens
+  version: 0.0.1
+
+servers:
+  - url: http://164.90.180.125/authenticate
+    description: Authorization Server
+
+paths:
+  /token:
+    post:
+      summary: Route used to retrieve JWToken
+      requestBody:
+        description: JSON body containing username and password
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRequest'
+      responses:
+        200:
+          description: JSON object containing JWToken
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        401:
+          description: JSON object containing unauthorized message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        500:
+          description: JSON response containing internal server error message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+  /user:
+    post:
+      summary: Route used to create new users
+      requestBody:
+        description: JSON body containing user details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewUserRequest'
+      responses:
+        200:
+          description: JSON object containing success message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserCreated'
+        400:
+          description: JSON object containing invalid request message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequest'
+        500:
+          description: JSON response containing internal server error message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+
+components:
+  schemas:
+    InternalServerError:
+      properties:
+        http_code:
+          type: integer
+          example: 500
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: internal server error
+    Unauthorized:
+      properties:
+        http_code:
+          type: integer
+          example: 401
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: unauthorized
+    TokenRequest:
+      properties:
+        uid:
+          type: string
+          example: test-user
+        password:
+          type: string
+          example: test-password
+    TokenResponse:
+      properties:
+        http_code:
+          type: integer
+          example: 200
+        success:
+          type: boolean
+          example: true
+        token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcnkiOiIyMDIwLTA4LTMxVDA3OjQ5OjE5LjMzMTEyNDU5NloiLCJ1aWQiOiJwc2F1ZXJib3JuIn0._QJIuvSfSfXU59W3cHRY5N8oFnd9TPR8l11x01kBq9c
+    NewUserRequest:
+      properties:
+        uid:
+          type: string
+          example: sample-user
+        password:
+          type: string
+          example: sample-passwod
+        email:
+          type: string
+          example: sample-email@gmail.com
+        admin:
+          type: boolean
+          example: false
+    UserCreated:
+      properties:
+        http_code:
+          type: integer
+          example: 200
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: successfully created user sample-user
+    InvalidRequest:
+      properties:
+        http_code:
+          type: integer
+          example: 400
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: invalid request
+

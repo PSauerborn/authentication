@@ -43,7 +43,7 @@ func GetTokenHandler(ctx *gin.Context) {
 		StandardHTTP.InvalidRequestBody(ctx)
 		return
 	}
-	log.Info(fmt.Sprintf("received request for password from user %s", request.Uid))
+	log.Info(fmt.Sprintf("received request for token from user %s", request.Uid))
 	// if user is not authorized, return 401 response
 	if (!isAuthenticatedUser(ctx, request.Uid, request.Password)) {
 		log.Warn(fmt.Sprintf("received invalid login request for user %s", request.Uid))

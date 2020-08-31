@@ -9,7 +9,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// function used to hash users passwords
+// function used to hash and salt user passwords
 func hashAndSalt(password string) string {
 	// convert passwords into byte array and hash
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
@@ -32,10 +32,11 @@ func comparePasswords(password, hash string) bool {
 // function used to authenticate username
 func isAuthenticatedUser(ctx *gin.Context, username, password string) bool {
 	// retrieve user details from database and compare to given password
-	user, err := GetUser(PostgresMiddleware{}.GetConnection(ctx), username)
+	user, err := GetUser(PostgresMiddleware{}.Persistence(ctx), username)
 	if err != nil {
 		return false
 	}
+	// compare given password with hashed password in database
 	log.Info(fmt.Sprintf("checking credentials for user %v+", user))
 	return comparePasswords(password, user.Password)
 }
@@ -43,7 +44,7 @@ func isAuthenticatedUser(ctx *gin.Context, username, password string) bool {
 // helper function used to determine is a username is already taken
 func isUsernameTaken(ctx *gin.Context, username string) bool {
 	log.Debug(fmt.Sprintf("checking username %s", username))
-	user, err := GetUsername(PostgresMiddleware{}.GetConnection(ctx), username)
+	user, err := GetUsername(PostgresMiddleware{}.Persistence(ctx), username)
 	if err != nil {
 		log.Error(fmt.Errorf("unable to retrieve user from database: %v", err))
 		return true
@@ -55,7 +56,7 @@ func isUsernameTaken(ctx *gin.Context, username string) bool {
 // helper function used to determine is a user email is already taken
 func isEmailTaken(ctx *gin.Context, email string) bool {
 	log.Debug(fmt.Sprintf("checking email %s", email))
-	userEmail, err := GetUserEmail(PostgresMiddleware{}.GetConnection(ctx), email)
+	userEmail, err := GetUserEmail(PostgresMiddleware{}.Persistence(ctx), email)
 	if err != nil {
 		log.Error(fmt.Errorf("unable to retrieve user email from database: %v", err))
 		return true
@@ -76,8 +77,4 @@ func GenerateJWToken(uid string) (string, error) {
 		"expiry": expiry,
 	})
 	return token.SignedString([]byte(JWTSecret))
-}
-
-func ParseJWToken(token string) (JWTClaims, error) {
-	return JWTClaims{}, nil
 }
