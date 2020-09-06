@@ -9,9 +9,8 @@ import (
 
 // define struct used to hold JWT Claims
 type JWTClaims struct {
-	Uid   string    `json:"uid"`
-	Admin bool	    `json:"admin"`
-	Exp   time.Time `json:"exp"`
+	Uid   string      `json:"uid"`
+	Admin bool	      `json:"admin"`
 	jwt.StandardClaims
 }
 

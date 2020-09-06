@@ -1,14 +1,24 @@
 <template>
     <v-col cols=4>
         <v-sheet>
-            <v-card>
-                <v-card-title>
-                    <v-row align="center" justify="center">
-                        <v-col cols=12 align="center" justify="center">
-                            Welcome to Monty!
+            <v-card class="login-card">
+                <v-row class="text-left" align="left" justify="left">
+                    <v-card-text style="padding-top:0px">
+                        <v-col cols=12 align="left" justify="left" class="header-col">
+                            Project <span class="blue-span">Gateway</span>
                         </v-col>
-                    </v-row>
-                </v-card-title>
+                    </v-card-text>
+                </v-row>
+                <v-row class="center" align="center" justify="center">
+                    <v-card-title class="login-title">
+                        <v-col cols=12 align="center" justify="center" class="title-col">
+                            Welcome to Project <span class="blue-span">Gateway</span>
+                        </v-col>
+                    </v-card-title>
+                    <v-card-subtitle>
+                        Login or Signup below to access applications
+                    </v-card-subtitle>
+                </v-row>
                 <v-divider class="mx-4"></v-divider>
                 <br>
                 <v-tabs centered=true>
@@ -189,12 +199,31 @@ export default {
 </script>
 
 <style scoped>
+
 .blue-span {
     font-weight: bold;
-}
-
-.blue-span:hover {
-    cursor: pointer;
     color:#2196F3;
 }
+
+.login-card {
+    margin-top: 50px;
+}
+
+.header-col {
+    font-size: 14px;
+}
+
+.title-col {
+    font-size: 20px;
+}
+
+.login-title {
+    padding-top: 0px;
+}
+
+.login-header {
+    background: linear-gradient(rgba(255,255,255,.5), rgba(255,255,255,.5)), url("../assets/login.png");
+
+}
+
 </style>

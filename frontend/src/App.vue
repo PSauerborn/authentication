@@ -1,13 +1,13 @@
 <template>
-  <v-app>
-    <v-main>
-      <v-container>
-        <v-row align="center" justify="center">
-          <Login/>
-        </v-row>
-      </v-container>
-      <notifications group="main" position="bottom right"/>
-    </v-main>
+  <v-app style="height: 100%">
+      <v-main>
+        <v-container fluid>
+          <v-row align="center" justify="center">
+            <Login/>
+          </v-row>
+        </v-container>
+        <notifications group="main" position="bottom right"/>
+      </v-main>
   </v-app>
 </template>
 
