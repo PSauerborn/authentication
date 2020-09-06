@@ -81,6 +81,13 @@ func CreateUserHandler(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(400, payload)
 		return
 	}
+	// check that email address is valid
+	if (!isValidEmail(request.Email)) {
+		log.Error(fmt.Sprintf("received request with invalid email address %s", request.Email))
+		payload := gin.H{"http_code": 400, "success": false, "message": "invalid email address"}
+		ctx.AbortWithStatusJSON(400, payload)
+		return
+	}
 	// check if email is already taken
 	if (isEmailTaken(ctx, request.Email)) {
 		payload := gin.H{"http_code": 400, "success": false, "message": "email already in use"}

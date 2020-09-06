@@ -4,10 +4,17 @@ import (
 	"fmt"
 	"time"
 	"errors"
+	"strings"
+	"net"
+	"regexp"
 	"golang.org/x/crypto/bcrypt"
 	"github.com/gin-gonic/gin"
 	"github.com/dgrijalva/jwt-go"
 	log "github.com/sirupsen/logrus"
+)
+
+var (
+	emailRegex = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
 )
 
 // function used to hash and salt user passwords
@@ -94,4 +101,22 @@ func ParseJWToken(tokenString string) (*JWTClaims, error) {
 		log.Error("unable to parse JWT claims")
 		return nil, errors.New("invalid JWToken")
 	}
+}
+
+// function used to check if email address
+func isValidEmail(email string) bool {
+	if len(email) < 3 && len(email) > 254 {
+		return false
+	}
+	// check that regex matches
+	if !emailRegex.MatchString(email) {
+		return false
+	}
+	parts := strings.Split(email, "@")
+	// execute MX record lookup to validate
+	mx, err := net.LookupMX(parts[1])
+	if err != nil || len(mx) == 0 {
+		return false
+	}
+	return true
 }
