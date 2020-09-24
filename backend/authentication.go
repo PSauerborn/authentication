@@ -5,6 +5,7 @@ import (
     "github.com/jackc/pgx/v4"
     "github.com/gin-gonic/gin"
     log "github.com/sirupsen/logrus"
+    jaeger_negroni "github.com/PSauerborn/jaeger-negroni"
 )
 
 var (
@@ -17,6 +18,13 @@ func main() {
     ConfigureService()
     router := gin.New()
     router.Use(CORSMiddleware())
+
+    // create new config object
+    jaegerConfig := jaeger_negroni.Config("jaeger-agent", "authentication-api", 6831)
+    tracer := jaeger_negroni.NewTracer(jaegerConfig)
+    defer tracer.Close()
+
+    router.Use(jaeger_negroni.JaegerNegroni(jaegerConfig))
 
     // configure GET routes used for server
     router.GET("/health", HealthCheckHandler)
